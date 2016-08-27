@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
+
+    <style>
+        .friend {
+            float: left;
+            margin: 15px;
+        }
+        .photo {
+            margin: 0 5px 10px;
+            padding: 10px;
+            border: 1px solid #BEBEBE;
+        }
+        .social-indicators {
+            padding: 5px;
+        }
+        .socials {
+            padding: 0 5px;
+        }
+        .socials:before {
+            padding-right: 5px;
+        }
+        .commentator_ava {
+            padding-left: 0;
+        }
+        .comment_text {
+            padding: 0;
+        }
+        .comment {
+            border: none;
+        }
+        .comments_list {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="header"></div>
+
+    <div class="btn-group btn-group-lg">
+        <button type="button" class="btn btn-default" onclick="Router.handle('music')">Музыка</button>
+        <button type="button" class="btn btn-default" onclick="Router.handle('friends')">Друзья</button>
+        <button type="button" class="btn btn-default" onclick="Router.handle('news')">Новости</button>
+        <button type="button" class="btn btn-default" onclick="Router.handle('groups')">Группы</button>
+        <button type="button" class="btn btn-default" onclick="Router.handle('photos')">Фото</button>
+    </div>
+    <hr>
+    <div id="results"></div>
+</div>
+
+<script src="model.js"></script>
+<script src="view.js"></script>
+<script src="controller.js"></script>
+<script src="router.js"></script>
+<script src="entry.js"></script>
+
+<script type="text/x-handlebars-template" id="headerTemplate">
+    <h1>Данные из VK-аккаунта: {{first_name}} {{last_name}}</h1>
+</script>
+
+<script type="text/x-handlebars-template" id="musicTemplate">
+    <ul class="list-group" id="audioList">
+        {{#each list}}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-10">
+                    <span class="title">{{{artist}}} - {{{title}}}</span>
+                </div>
+                <div class="col-xs-2 text-right">{{formatTime duration}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+
+<script type="text/x-handlebars-template" id="friendsTemplate">
+    <div id="friendsList">
+        {{#each list}}
+        <div class="friend text-center">
+            <img src="{{photo_100}}" class="img-circle">
+            <div>{{first_name}}<br>{{last_name}}</div>
+        </div>
+        {{/each}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="newsTemplate">
+    <div class="news">
+        {{#each list}}
+        {{#if text}}
+        <div class="post">
+            <b>{{formatDate date}}</b>
+            <div class="post-text">{{{text}}}</div>
+        </div>
+        <hr>
+        {{/if}}
+        {{/each}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="groupsTemplate">
+    <ul class="list-group" id="groupsList">
+        {{#each list}}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4">
+                    <img src="{{photo_100}}" alt="Лого группы" class="img-circle">
+                </div>
+                <p class="col-xs-8">{{name}}</p>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+
+<script type="text/x-handlebars-template" id="photosTemplate">
+    <div id="photosList" class="row">
+        {{#each list}}
+        <div class=" col-xs-4 text-center">
+            <div class="photo">
+                <figure>
+                    <img src="{{photo_604}}" class="img-thumbnail img-responsive">
+                </figure>
+                <div class="social-indicators text-right">
+                    <span class="socials glyphicon glyphicon-heart">{{likes.count}}</span>
+                    <span class="socials glyphicon glyphicon-comment" data-indicator="comments"></span>
+                    <span class="socials glyphicon glyphicon-bullhorn">{{reposts.count}}</span>
+                </div>
+                <div class="comments-container">
+                    Загрузка комментариев...
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</script>
+
+<script type="text/x-handlebars-template" id="commentsTemplate">
+    <ul class="list-group comments_list">
+        {{#if count}}
+            {{#each items}}
+                <li class="list-group-item comment">
+                    <div>
+                        <p>{{author.name}} {{formatDate date}}</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 commentator_ava">
+                            <img src="{{author.photo}}" alt="Фото">
+                        </div>
+                        <p class="col-xs-8 comment_text">{{text}}</p>
+                    </div>
+                </li>
+            {{/each}}
+        {{else}}
+            <li class="list-group-item comment">К этому фото нет комментариев</li>
+        {{/if}}
+    </ul>
+</script>
+
+</body>
+</html>
